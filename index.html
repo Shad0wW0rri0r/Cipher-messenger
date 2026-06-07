@@ -21,7 +21,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(
 button{font-family:inherit;cursor:pointer}
 textarea,input{font-family:inherit}
 
-/* ── Setup ──────────────────────────────────────────────── */
+/* ── Setup ─────────────────────────────────────── */
 #setup{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:var(--bg);z-index:1000}
 .setup-card{background:var(--surf);border:1px solid var(--border2);border-radius:22px;
   padding:52px 48px;width:430px;text-align:center;
@@ -47,24 +47,13 @@ textarea,input{font-family:inherit}
   border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:7px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ── App layout ─────────────────────────────────────────── */
-#app{display:flex;height:100vh}
+/* ── App layout ─────────────────────────────────── */
+#app{display:flex;height:100vh;position:relative}
 
-/* ── Mobile ─────────────────────────────────────────────── */
-@media(max-width:640px){
-  .setup-card{width:94vw;padding:36px 24px}
-  #app{position:relative}
-  #sidebar{position:absolute;inset:0;width:100%;z-index:10;transform:translateX(0);transition:transform .25s ease}
-  #sidebar.slide-out{transform:translateX(-100%)}
-  #chat{position:absolute;inset:0;width:100%}
-  #back-btn{display:flex}
-  .save-btn{display:none}
-  #lvid{width:110px;height:76px;bottom:90px;right:12px}
-}
-
-/* ── Sidebar ────────────────────────────────────────────── */
+/* ── Sidebar ─────────────────────────────────────── */
 #sidebar{width:290px;min-width:290px;background:var(--surf);border-right:1px solid var(--border);
-  display:flex;flex-direction:column;height:100vh}
+  display:flex;flex-direction:column;height:100vh;
+  transition:transform .25s ease;z-index:20}
 .sb-head{padding:20px 18px 16px;border-bottom:1px solid var(--border)}
 .brand{font-size:20px;font-weight:800;letter-spacing:-.8px;
   background:linear-gradient(135deg,#5b6af5,#a78af5);
@@ -73,6 +62,7 @@ textarea,input{font-family:inherit}
 .av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
   font-weight:700;font-size:12px;flex-shrink:0;position:relative;user-select:none}
 .av.xl{width:88px;height:88px;font-size:32px}
+.av.grp{background:linear-gradient(135deg,#3a4fd4,#7c3aed)!important}
 .sdot{position:absolute;bottom:1px;right:1px;width:10px;height:10px;
   border-radius:50%;border:2px solid var(--surf)}
 .sdot.on{background:var(--online)}.sdot.off{background:var(--offline)}
@@ -81,7 +71,7 @@ textarea,input{font-family:inherit}
 .me-stat{font-size:11px;margin-top:2px}
 .me-stat.on{color:var(--online)}.me-stat.dc{color:var(--danger)}
 .sec-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
-  color:var(--text3);padding:14px 18px 6px}
+  color:var(--text3);padding:14px 18px 6px;display:flex;align-items:center;justify-content:space-between}
 #clist{flex:1;overflow-y:auto;padding:0 8px 8px}
 #clist::-webkit-scrollbar{width:3px}
 #clist::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
@@ -95,34 +85,43 @@ textarea,input{font-family:inherit}
 .ci-stat.on{color:var(--online)}
 .ubadge{background:var(--accent);color:#fff;font-size:10px;font-weight:700;
   padding:2px 7px;border-radius:10px;min-width:18px;text-align:center}
-.sb-foot{padding:12px 14px;border-top:1px solid var(--border)}
-.add-btn{width:100%;background:transparent;border:1.5px dashed var(--border2);
-  border-radius:10px;padding:9px;color:var(--text2);font-size:12.5px;
-  display:flex;align-items:center;justify-content:center;gap:6px;transition:all .15s}
-.add-btn:hover{border-color:var(--accent);color:var(--accent)}
+.sb-foot{padding:10px 14px;border-top:1px solid var(--border);display:flex;gap:8px}
+.sb-btn{flex:1;background:transparent;border:1.5px dashed var(--border2);
+  border-radius:10px;padding:8px 6px;color:var(--text2);font-size:12px;
+  display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
+.sb-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-/* ── Chat area ──────────────────────────────────────────── */
-#chat{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
+/* sidebar overlay for mobile */
+#sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:15;backdrop-filter:blur(2px)}
+
+/* ── Chat area ──────────────────────────────────── */
+#chat{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden;min-width:0}
 #empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   gap:10px;color:var(--text3)}
 .empty-ico{font-size:44px;opacity:.2}
 .empty-t{font-size:14px}.empty-s{font-size:12px;opacity:.7}
 #chatarea{flex:1;display:flex;flex-direction:column;overflow:hidden}
 
-#chdr{padding:0 18px;height:62px;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;gap:12px;background:var(--surf);flex-shrink:0}
+/* chat header */
+#chdr{padding:0 14px;height:62px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;background:var(--surf);flex-shrink:0}
+.ch-tog{width:36px;height:36px;border-radius:9px;border:none;background:var(--surf2);
+  color:var(--text2);font-size:18px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .15s}
+.ch-tog:hover{background:var(--accent);color:#fff}
 .ch-info{flex:1;min-width:0}
 .ch-name{font-weight:600;font-size:14px}
 .ch-stat{font-size:11.5px;color:var(--text2);margin-top:2px}
 .ch-stat.on{color:var(--online)}
 .hdr-btn{width:36px;height:36px;border-radius:9px;border:none;
   display:flex;align-items:center;justify-content:center;font-size:15px;
-  transition:all .15s;background:var(--surf2);color:var(--text2)}
+  transition:all .15s;background:var(--surf2);color:var(--text2);flex-shrink:0}
 .hdr-btn:hover{background:var(--accent);color:#fff;transform:scale(1.05)}
 .save-btn{background:transparent;border:1px solid var(--border2);border-radius:8px;
-  padding:5px 11px;color:var(--text2);font-size:11.5px;transition:all .15s}
+  padding:5px 10px;color:var(--text2);font-size:11px;transition:all .15s;white-space:nowrap}
 .save-btn:hover{border-color:var(--accent);color:var(--accent)}
 
+/* messages */
 #msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:4px}
 #msgs::-webkit-scrollbar{width:4px}
 #msgs::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
@@ -134,6 +133,7 @@ textarea,input{font-family:inherit}
 .msg{display:flex;flex-direction:column;max-width:64%}
 .msg.s{align-self:flex-end;align-items:flex-end}
 .msg.r{align-self:flex-start;align-items:flex-start}
+.msg-sender{font-size:10.5px;color:var(--text2);margin-bottom:3px;padding:0 4px}
 .bbl{padding:10px 14px;border-radius:18px;line-height:1.55;font-size:13.5px;word-wrap:break-word}
 .msg.s .bbl{background:var(--sent);border-bottom-right-radius:4px}
 .msg.r .bbl{background:var(--recv);border:1px solid var(--border2);border-bottom-left-radius:4px}
@@ -141,7 +141,8 @@ textarea,input{font-family:inherit}
 .msg-t{font-size:10px;color:var(--text3);font-variant-numeric:tabular-nums}
 .no-msgs{text-align:center;color:var(--text3);font-size:13px;padding-top:40px;opacity:.7}
 
-#inp-area{padding:14px 18px;border-top:1px solid var(--border);display:flex;gap:10px;
+/* input */
+#inp-area{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:10px;
   align-items:flex-end;background:var(--surf);flex-shrink:0}
 #msgi{flex:1;background:var(--surf2);border:1.5px solid var(--border2);border-radius:14px;
   padding:11px 15px;color:var(--text);font-size:14px;resize:none;outline:none;
@@ -154,7 +155,7 @@ textarea,input{font-family:inherit}
 .send-btn:hover{background:var(--accent2);transform:scale(1.05)}
 .send-btn:active{transform:scale(.95)}
 
-/* ── Call overlay ───────────────────────────────────────── */
+/* ── Call overlay ───────────────────────────────── */
 #callover{position:fixed;inset:0;background:#060810;z-index:500;
   display:flex;flex-direction:column;align-items:center;justify-content:center}
 #rvid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#0d0f18}
@@ -171,8 +172,7 @@ textarea,input{font-family:inherit}
 #callav-wrap{position:relative;z-index:5;margin-bottom:16px}
 .pring{position:absolute;border-radius:50%;border:2px solid var(--accent);
   animation:pulse 1.8s infinite;pointer-events:none}
-.pring.a{inset:-12px;animation-delay:0s}
-.pring.b{inset:-24px;animation-delay:.6s;opacity:.5}
+.pring.a{inset:-12px}.pring.b{inset:-24px;animation-delay:.6s;opacity:.5}
 .pring.c{inset:-38px;animation-delay:1.2s;opacity:.25}
 @keyframes pulse{0%{transform:scale(.88);opacity:.9}100%{transform:scale(1.15);opacity:0}}
 .call-ctrls{position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
@@ -185,7 +185,7 @@ textarea,input{font-family:inherit}
 .cbtn.end{background:var(--danger);color:#fff}
 .cbtn.toggled{background:rgba(255,255,255,.25)}
 
-/* ── Incoming call ──────────────────────────────────────── */
+/* ── Incoming call ──────────────────────────────── */
 #incall{position:fixed;inset:0;z-index:600;display:flex;align-items:flex-end;
   justify-content:center;padding-bottom:38px;background:rgba(0,0,0,.55);backdrop-filter:blur(10px)}
 .inc-card{background:var(--surf);border:1px solid var(--border2);border-radius:26px;
@@ -201,18 +201,19 @@ textarea,input{font-family:inherit}
 .inc-btn.rej{background:var(--danger);color:#fff}
 .inc-btn.acc{background:var(--online);color:#fff}
 
-/* ── Add contact modal ──────────────────────────────────── */
-.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
-  z-index:700;display:flex;align-items:center;justify-content:center}
+/* ── Modals ─────────────────────────────────────── */
+.moverlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+  z-index:700;display:flex;align-items:center;justify-content:center;padding:16px}
 .mbox{background:var(--surf);border:1px solid var(--border2);border-radius:22px;
-  padding:34px;width:390px;box-shadow:var(--shadow)}
+  padding:32px;width:100%;max-width:400px;box-shadow:var(--shadow);max-height:90vh;
+  display:flex;flex-direction:column}
 .mtitle{font-size:18px;font-weight:700;margin-bottom:6px}
-.msub{color:var(--text2);font-size:12.5px;margin-bottom:22px;line-height:1.6}
+.msub{color:var(--text2);font-size:12.5px;margin-bottom:20px;line-height:1.6}
 .minput{width:100%;background:var(--surf2);border:1.5px solid var(--border2);border-radius:12px;
   padding:12px 14px;color:var(--text);font-size:14px;outline:none;
-  margin-bottom:16px;transition:border-color .2s}
+  margin-bottom:14px;transition:border-color .2s}
 .minput:focus{border-color:var(--accent)}
-.mbtns{display:flex;gap:8px;justify-content:flex-end}
+.mbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:6px;flex-shrink:0}
 .btn-c{background:none;border:1.5px solid var(--border2);border-radius:10px;
   padding:9px 16px;color:var(--text2);transition:all .15s}
 .btn-c:hover{border-color:var(--text2);color:var(--text)}
@@ -220,25 +221,52 @@ textarea,input{font-family:inherit}
   color:#fff;font-weight:700;transition:opacity .15s}
 .btn-p:hover{opacity:.9}
 
-/* ── Toast ──────────────────────────────────────────────── */
+/* member checklist */
+.member-list{flex:1;overflow-y:auto;margin-bottom:14px;display:flex;flex-direction:column;gap:4px}
+.member-list::-webkit-scrollbar{width:3px}
+.member-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:10px;
+  cursor:pointer;transition:background .12s;user-select:none}
+.member-item:hover{background:var(--surf2)}
+.member-item input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);flex-shrink:0}
+.member-item-name{font-size:13px;flex:1}
+.member-item-stat{font-size:11px;color:var(--text2)}
+.member-item-stat.on{color:var(--online)}
+.no-members{text-align:center;padding:20px;color:var(--text3);font-size:13px}
+
+/* group header members preview */
+.grp-members{font-size:11px;color:var(--text2);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ── Toast ──────────────────────────────────────── */
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
   background:var(--surf3);border:1px solid var(--border2);border-radius:10px;
   padding:9px 18px;font-size:13px;color:var(--text);z-index:900;
   opacity:0;transition:opacity .22s;pointer-events:none;white-space:nowrap}
 #toast.show{opacity:1}
 
-/* ── Banner (server shutdown / reconnect) ───────────────── */
-#banner{position:fixed;top:0;left:0;right:0;padding:10px;text-align:center;font-size:13px;
-  font-weight:600;z-index:950;display:none}
+/* ── Banner ─────────────────────────────────────── */
+#banner{position:fixed;top:0;left:0;right:0;padding:10px;text-align:center;
+  font-size:13px;font-weight:600;z-index:950;display:none}
 #banner.warn{background:#f5a040;color:#1a0e00;display:block}
 #banner.err{background:var(--danger);color:#fff;display:block}
+
+/* ── Mobile ─────────────────────────────────────── */
+@media(max-width:640px){
+  .setup-card{width:94vw;padding:36px 22px}
+  #sidebar{position:fixed;top:0;left:0;bottom:0;width:82vw;max-width:320px;
+    transform:translateX(-100%);box-shadow:4px 0 24px rgba(0,0,0,.5)}
+  #sidebar.open{transform:translateX(0)}
+  #sb-overlay.show{display:block}
+  .save-btn{display:none}
+  #lvid{width:110px;height:76px;bottom:90px;right:10px}
+  .mbox{padding:24px 18px}
+}
 
 *{scrollbar-width:thin;scrollbar-color:var(--border2) transparent}
 </style>
 </head>
 <body>
 
-<!-- Banner -->
 <div id="banner"></div>
 
 <!-- Setup -->
@@ -257,31 +285,33 @@ textarea,input{font-family:inherit}
   </div>
 </div>
 
+<!-- Sidebar overlay (mobile) -->
+<div id="sb-overlay" onclick="closeSidebar()"></div>
+
 <!-- App -->
 <div id="app" class="hidden">
+
   <aside id="sidebar">
     <div class="sb-head">
       <div class="brand">Cipher</div>
       <div class="me">
-        <div class="av" id="myav">
-          <span id="myini"></span>
-          <span class="sdot on"></span>
-        </div>
+        <div class="av" id="myav"><span id="myini"></span><span class="sdot on"></span></div>
         <div class="me-info">
           <div class="me-name" id="myname"></div>
           <div class="me-stat on" id="mystat">● Online</div>
         </div>
       </div>
     </div>
-    <div class="sec-lbl">Contacts</div>
+
+    <div class="sec-lbl">
+      <span>Contacts &amp; Groups</span>
+    </div>
     <div id="clist">
-      <div class="no-c" id="noc">
-        Nobody else is online yet.<br>
-        Share this page URL with<br>anyone you want to chat with.
-      </div>
+      <div class="no-c" id="noc">Nobody online yet.<br>Share your Cipher URL<br>with anyone to start chatting.</div>
     </div>
     <div class="sb-foot">
-      <button class="add-btn" onclick="openAddModal()">＋ Add Contact</button>
+      <button class="sb-btn" onclick="openAddModal()">＋ Contact</button>
+      <button class="sb-btn" onclick="openGroupModal()">👥 Group</button>
     </div>
   </aside>
 
@@ -289,27 +319,24 @@ textarea,input{font-family:inherit}
     <div id="empty">
       <div class="empty-ico">💬</div>
       <div class="empty-t">No conversation open</div>
-      <div class="empty-s">Select a contact or add one to begin</div>
+      <div class="empty-s">Select a contact or group to begin</div>
     </div>
     <div id="chatarea" class="hidden">
       <div id="chdr">
-        <button id="back-btn" onclick="goBack()" style="display:none;background:none;border:none;color:var(--text2);font-size:20px;padding:0 8px 0 0;line-height:1">‹</button>
-        <div class="av" id="chav">
-          <span id="chavi"></span>
-          <span class="sdot" id="chdot"></span>
-        </div>
+        <button class="ch-tog" onclick="toggleSidebar()" title="Contacts">☰</button>
+        <div class="av" id="chav"><span id="chavi"></span><span class="sdot" id="chdot"></span></div>
         <div class="ch-info">
           <div class="ch-name" id="chname"></div>
           <div class="ch-stat" id="chstat"></div>
         </div>
-        <button class="save-btn" onclick="saveChat()">⬇ Save Chat</button>
-        <button class="hdr-btn" title="Audio call" onclick="startCall('audio')">📞</button>
-        <button class="hdr-btn" title="Video call"  onclick="startCall('video')">🎥</button>
+        <button class="save-btn" onclick="saveChat()">⬇ Save</button>
+        <button class="hdr-btn" id="call-audio-btn" title="Audio call" onclick="startCall('audio')">📞</button>
+        <button class="hdr-btn" id="call-video-btn" title="Video call"  onclick="startCall('video')">🎥</button>
       </div>
       <div id="msgs"></div>
       <div id="inp-area">
         <textarea id="msgi" rows="1"
-          placeholder="Type a message… (Enter to send)"
+          placeholder="Type a message…"
           onkeydown="onKey(event)" oninput="autoH(this)"></textarea>
         <button class="send-btn" onclick="sendMsg()">➤</button>
       </div>
@@ -325,9 +352,7 @@ textarea,input{font-family:inherit}
   <div id="callav-wrap">
     <div class="av xl" id="callav">
       <span id="callavi"></span>
-      <span class="pring a"></span>
-      <span class="pring b"></span>
-      <span class="pring c"></span>
+      <span class="pring a"></span><span class="pring b"></span><span class="pring c"></span>
     </div>
   </div>
   <div class="call-info">
@@ -336,9 +361,9 @@ textarea,input{font-family:inherit}
     <div class="call-dur hidden" id="calldur"></div>
   </div>
   <div class="call-ctrls">
-    <button class="cbtn mute" id="mbtn" onclick="togMute()" title="Mute">🎙</button>
-    <button class="cbtn end"  onclick="endCall()"  title="End call">📵</button>
-    <button class="cbtn cam hidden" id="cambtn" onclick="togCam()" title="Camera">📷</button>
+    <button class="cbtn mute" id="mbtn" onclick="togMute()">🎙</button>
+    <button class="cbtn end"  onclick="endCall()">📵</button>
+    <button class="cbtn cam hidden" id="cambtn" onclick="togCam()">📷</button>
   </div>
 </div>
 
@@ -359,7 +384,7 @@ textarea,input{font-family:inherit}
 <div class="moverlay hidden" id="addmod">
   <div class="mbox">
     <div class="mtitle">Add Contact</div>
-    <div class="msub">Enter the exact display name of someone who is currently online, or save a name to message them when they connect.</div>
+    <div class="msub">Enter the exact display name of someone on Cipher.</div>
     <input id="addinp" class="minput" type="text" placeholder="Their display name…" maxlength="28" autocomplete="off">
     <div class="mbtns">
       <button class="btn-c" onclick="closeAddModal()">Cancel</button>
@@ -368,27 +393,41 @@ textarea,input{font-family:inherit}
   </div>
 </div>
 
+<!-- Create group modal -->
+<div class="moverlay hidden" id="grpmod">
+  <div class="mbox">
+    <div class="mtitle">Create Group</div>
+    <div class="msub">Give the group a name and select members from your contacts.</div>
+    <input id="grpname" class="minput" type="text" placeholder="Group name…" maxlength="40" autocomplete="off">
+    <div class="member-list" id="member-list"></div>
+    <div class="mbtns">
+      <button class="btn-c" onclick="closeGroupModal()">Cancel</button>
+      <button class="btn-p" onclick="doCreateGroup()">Create</button>
+    </div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script>
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // STATE
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 const S = {
   me: null,
   contacts: {},   // name → { status, lastSeen, color, unread }
-  msgs: {},       // name → [{id, text, sender, ts}]
-  active: null,
-  iceServers: [], // populated from /api/ice
+  groups: {},     // groupId → { id, name, members[], createdBy }
+  msgs: {},       // convId → [{id,text,sender,ts,groupId?,groupName?}]
+  active: null,   // convId (username or 'grp_xxx')
+  iceServers: [],
   call: { on:false, type:null, peer:null, dir:null, start:null, tick:null, offer:null },
   muted: false, camOff: false
 };
 
 let ws = null, pc = null, localStream = null, iceQ = [];
-let reconnAttempts = 0, reconnTimer = null;
-const TTL = 86400000; // 24 h
+let reconnAttempts = 0;
+const TTL = 86400000;
 
-// ── Avatar helpers ───────────────────────────────────────
 const COLORS = ['#5b6af5','#f55b8b','#3ec9a7','#f5c040','#5bc8f5','#c55bf5','#f5855b','#4fc97a'];
 function col(n){ let h=0; for(const c of n) h+=c.charCodeAt(0); return COLORS[h%COLORS.length] }
 function ini(n){ return (n||'?').slice(0,2).toUpperCase() }
@@ -398,346 +437,413 @@ function esc(s){
 }
 function js(o){ return JSON.stringify(o) }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // SETUP
-// ════════════════════════════════════════════════
-(function preload(){
-  const saved = localStorage.getItem('cipher_me');
-  if (saved) document.getElementById('sname').value = saved;
-})();
-
-document.getElementById('sname').addEventListener('keydown', e => { if(e.key==='Enter') doSetup() });
+// ═══════════════════════════════════════════════
+(function(){ const s=localStorage.getItem('cipher_me'); if(s) document.getElementById('sname').value=s })();
+document.getElementById('sname').addEventListener('keydown', e=>{ if(e.key==='Enter') doSetup() });
 
 function doSetup(){
   const n = document.getElementById('sname').value.trim();
-  if (!n || n.length < 2){ setErr('Name must be at least 2 characters'); return }
-  S.me = n;
-  setBusy(true);
-  setErr('');
-  connectWS();
+  if(!n||n.length<2){ setErr('Name must be at least 2 characters'); return }
+  S.me=n; setBusy(true); setErr(''); connectWS();
 }
-
-function setErr(msg){ document.getElementById('serr').textContent = msg }
+function setErr(m){ document.getElementById('serr').textContent=m }
 function setBusy(b){
-  const btn = document.getElementById('sbtn');
-  btn.disabled = b;
-  btn.innerHTML = b ? '<span class="spinner"></span>Connecting…' : 'Connect →';
+  const btn=document.getElementById('sbtn');
+  btn.disabled=b;
+  btn.innerHTML=b?'<span class="spinner"></span>Connecting…':'Connect →';
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // WEBSOCKET
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function connectWS(){
-  const proto = location.protocol === 'https:' ? 'wss' : 'ws';
+  const proto = location.protocol==='https:'?'wss':'ws';
   ws = new WebSocket(`${proto}://${location.host}`);
-
-  ws.onopen = () => {
-    reconnAttempts = 0;
-    ws.send(js({ type:'register', username:S.me }));
+  ws.onopen = ()=>{ reconnAttempts=0; ws.send(js({type:'register',username:S.me})) };
+  ws.onmessage = e=>{ let m; try{m=JSON.parse(e.data)}catch(_){return} handleSrv(m) };
+  ws.onclose = ()=>{
+    if(!document.getElementById('app').classList.contains('hidden')){
+      setOnlineBadge(false); showBanner('warn','⚠  Disconnected — reconnecting…');
+      setTimeout(connectWS, Math.min(1000*Math.pow(2,reconnAttempts++),20000));
+    } else { setBusy(false) }
   };
-
-  ws.onmessage = e => {
-    let msg; try{ msg = JSON.parse(e.data) }catch(_){ return }
-    handleSrv(msg);
-  };
-
-  ws.onclose = () => {
-    if (!document.getElementById('app').classList.contains('hidden')){
-      setOnlineBadge(false);
-      showBanner('warn', '⚠  Disconnected — reconnecting…');
-      const delay = Math.min(1000 * Math.pow(2, reconnAttempts++), 20000);
-      reconnTimer = setTimeout(connectWS, delay);
-    } else {
-      // Still on setup screen
-      setBusy(false);
-    }
-  };
-
-  ws.onerror = () => {};
+  ws.onerror=()=>{};
 }
+function send(m){ if(ws&&ws.readyState===WebSocket.OPEN) ws.send(js(m)) }
 
-function send(msg){
-  if (ws && ws.readyState === WebSocket.OPEN) ws.send(js(msg));
-}
-
-// ════════════════════════════════════════════════
-// SERVER MESSAGE DISPATCH
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// SERVER MESSAGES
+// ═══════════════════════════════════════════════
 async function handleSrv(msg){
   switch(msg.type){
-
     case 'online-users':
-      // Server accepted registration
-      localStorage.setItem('cipher_me', S.me);
-      // Fetch ICE config then launch
-      await loadIce();
-      loadStorage();
+      localStorage.setItem('cipher_me',S.me);
+      await loadIce(); loadStorage();
       for(const u of msg.users){
-        if(!S.contacts[u]) S.contacts[u] = { status:'offline', lastSeen:null, color:col(u), unread:0 };
-        S.contacts[u].status   = 'online';
-        S.contacts[u].lastSeen = Date.now();
+        if(!S.contacts[u]) S.contacts[u]={status:'offline',lastSeen:null,color:col(u),unread:0};
+        S.contacts[u].status='online'; S.contacts[u].lastSeen=Date.now();
       }
-      saveCts();
-      launchApp();
-      break;
-
-    case 'presence':        onPresence(msg);  break;
-    case 'message':         onInMsg(msg);     break;
-    case 'call-offer':      onOffer(msg);     break;
-    case 'call-answer':     onAnswer(msg);    break;
-    case 'ice':             onIce(msg);       break;
-    case 'call-end':        cleanCall();      break;
-    case 'call-rej':        toast(msg.from+' declined'); cleanCall(); break;
-
+      saveCts(); launchApp(); break;
+    case 'presence':     onPresence(msg); break;
+    case 'message':      onInMsg(msg); break;
+    case 'group-invite': onGroupInvite(msg); break;
+    case 'call-offer':   onOffer(msg); break;
+    case 'call-answer':  onAnswer(msg); break;
+    case 'ice':          onIce(msg); break;
+    case 'call-end':     cleanCall(); break;
+    case 'call-rej':     toast(msg.from+' declined'); cleanCall(); break;
     case 'server-shutdown':
-      showBanner('err', '🔴  Server is restarting — please refresh the page in a moment.');
-      break;
-
+      showBanner('err','🔴  Server restarting — please refresh in a moment.'); break;
     case 'error':
-      if(msg.code === 'NAME_TAKEN'){
-        setErr(msg.text); setBusy(false);
-        ws.close(); ws = null;
-      } else {
-        toast('Server: '+msg.text);
-      }
+      if(msg.code==='NAME_TAKEN'){ setErr(msg.text); setBusy(false); ws.close(); ws=null }
+      else toast('Server: '+msg.text);
       break;
   }
 }
 
-// ════════════════════════════════════════════════
-// ICE SERVERS
-// ════════════════════════════════════════════════
 async function loadIce(){
-  try{
-    const r = await fetch('/api/ice');
-    S.iceServers = await r.json();
-  } catch(_){
-    S.iceServers = [
-      { urls:'stun:stun.l.google.com:19302'  },
-      { urls:'stun:stun1.l.google.com:19302' },
-    ];
-  }
+  try{ const r=await fetch('/api/ice'); S.iceServers=await r.json() }
+  catch(_){ S.iceServers=[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'}] }
 }
 
-// ════════════════════════════════════════════════
-// APP LAUNCH
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// LAUNCH
+// ═══════════════════════════════════════════════
 function launchApp(){
   document.getElementById('setup').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
-
-  document.getElementById('myav').style.background = col(S.me);
-  document.getElementById('myini').textContent      = ini(S.me);
-  document.getElementById('myname').textContent     = S.me;
-  setOnlineBadge(true);
-  hideBanner();
-
-  setInterval(cleanMsgs, 60000);
-  cleanMsgs();
+  document.getElementById('myav').style.background=col(S.me);
+  document.getElementById('myini').textContent=ini(S.me);
+  document.getElementById('myname').textContent=S.me;
+  setOnlineBadge(true); hideBanner();
+  setInterval(cleanMsgs,60000); cleanMsgs();
   renderContacts();
-
-  // Re-register after reconnect
-  const _orig = ws.onopen;
-  ws.onopen = () => {
-    _orig && _orig();
-    ws.send(js({ type:'register', username:S.me }));
-    setOnlineBadge(true);
-    hideBanner();
-  };
+  const _orig=ws.onopen;
+  ws.onopen=()=>{ _orig&&_orig(); ws.send(js({type:'register',username:S.me})); setOnlineBadge(true); hideBanner() };
+}
+function setOnlineBadge(on){
+  const el=document.getElementById('mystat');
+  el.textContent=on?'● Online':'⚠ Reconnecting…'; el.className='me-stat '+(on?'on':'dc');
 }
 
-function setOnlineBadge(online){
-  const el = document.getElementById('mystat');
-  el.textContent  = online ? '● Online' : '⚠ Reconnecting…';
-  el.className    = 'me-stat '+(online?'on':'dc');
-}
-
-// ════════════════════════════════════════════════
-// PRESENCE
-// ════════════════════════════════════════════════
-function onPresence(m){
-  const existed = !!S.contacts[m.from];
-  if(!S.contacts[m.from])
-    S.contacts[m.from] = { status:'offline', lastSeen:null, color:col(m.from), unread:0 };
-  S.contacts[m.from].status = m.status;
-  if(m.status === 'online'){
-    S.contacts[m.from].lastSeen = Date.now();
-    if(!existed) toast(m.from+' is now online');
+// ═══════════════════════════════════════════════
+// SIDEBAR TOGGLE
+// ═══════════════════════════════════════════════
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sb-overlay');
+  const isMobile=window.innerWidth<=640;
+  if(isMobile){
+    const open=sb.classList.toggle('open');
+    ov.classList.toggle('show',open);
+  } else {
+    // desktop: toggle sidebar visibility
+    const hidden=sb.style.display==='none';
+    sb.style.display=hidden?'flex':'none';
   }
-  saveCts();
-  renderContacts();
-  if(S.active === m.from) updHdr();
+}
+function closeSidebar(){
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('show');
 }
 
-// ════════════════════════════════════════════════
-// LOCAL STORAGE
-// ════════════════════════════════════════════════
-function saveCts(){
-  const o = {};
-  for(const n in S.contacts) o[n] = { lastSeen: S.contacts[n].lastSeen };
-  localStorage.setItem('cipher_cts', js(o));
+// ═══════════════════════════════════════════════
+// PRESENCE
+// ═══════════════════════════════════════════════
+function onPresence(m){
+  const existed=!!S.contacts[m.from];
+  if(!S.contacts[m.from]) S.contacts[m.from]={status:'offline',lastSeen:null,color:col(m.from),unread:0};
+  S.contacts[m.from].status=m.status;
+  if(m.status==='online'){ S.contacts[m.from].lastSeen=Date.now(); if(!existed) toast(m.from+' is now online') }
+  saveCts(); renderContacts(); if(S.active===m.from) updHdr();
 }
+
+// ═══════════════════════════════════════════════
+// STORAGE
+// ═══════════════════════════════════════════════
+function saveCts(){
+  const o={}; for(const n in S.contacts) o[n]={lastSeen:S.contacts[n].lastSeen};
+  localStorage.setItem('cipher_cts',js(o));
+}
+function saveGroups(){ localStorage.setItem('cipher_groups',js(S.groups)) }
 
 function loadStorage(){
   try{
-    const cts = JSON.parse(localStorage.getItem('cipher_cts')||'{}');
-    for(const n in cts)
-      if(!S.contacts[n])
-        S.contacts[n] = { status:'offline', lastSeen:cts[n].lastSeen, color:col(n), unread:0 };
+    const cts=JSON.parse(localStorage.getItem('cipher_cts')||'{}');
+    for(const n in cts) if(!S.contacts[n]) S.contacts[n]={status:'offline',lastSeen:cts[n].lastSeen,color:col(n),unread:0};
   }catch(_){}
-
-  for(let i=0; i<localStorage.length; i++){
-    const k = localStorage.key(i);
-    if(k && k.startsWith('cmsg_')){
-      const names = k.slice(5).split('|');
-      if(names.includes(S.me) && names.length === 2){
-        const peer = names.find(x => x !== S.me);
-        if(peer){ try{ S.msgs[peer] = JSON.parse(localStorage.getItem(k)||'[]') }catch(_){} }
+  try{
+    const grps=JSON.parse(localStorage.getItem('cipher_groups')||'{}');
+    for(const id in grps) S.groups[id]=grps[id];
+  }catch(_){}
+  for(let i=0;i<localStorage.length;i++){
+    const k=localStorage.key(i);
+    if(k&&k.startsWith('cmsg_')){
+      const names=k.slice(5).split('|');
+      if(k.startsWith('cmsg_grp_')){
+        const gid=k.slice(5); // 'grp_xxx'
+        try{ S.msgs[gid]=JSON.parse(localStorage.getItem(k)||'[]') }catch(_){}
+      } else if(names.includes(S.me)&&names.length===2){
+        const peer=names.find(x=>x!==S.me);
+        if(peer){ try{ S.msgs[peer]=JSON.parse(localStorage.getItem(k)||'[]') }catch(_){} }
       }
     }
   }
 }
-
-function msgKey(a,b){ return 'cmsg_'+[a,b].sort().join('|') }
-function saveMsgs(p){ localStorage.setItem(msgKey(S.me,p), js(S.msgs[p]||[])) }
-
+function msgKey(convId){
+  if(convId.startsWith('grp_')) return 'cmsg_'+convId;
+  return 'cmsg_'+[S.me,convId].sort().join('|');
+}
+function saveMsgs(convId){ localStorage.setItem(msgKey(convId),js(S.msgs[convId]||[])) }
 function cleanMsgs(){
-  const cut = Date.now()-TTL;
-  for(const p in S.msgs){
-    S.msgs[p] = S.msgs[p].filter(m => m.ts > cut);
-    saveMsgs(p);
-  }
+  const cut=Date.now()-TTL;
+  for(const p in S.msgs){ S.msgs[p]=S.msgs[p].filter(m=>m.ts>cut); saveMsgs(p) }
 }
 
-// ════════════════════════════════════════════════
-// CONTACTS UI
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// CONTACTS + GROUPS UI
+// ═══════════════════════════════════════════════
 function renderContacts(){
-  const list = document.getElementById('clist');
-  const noc  = document.getElementById('noc');
-  const names = Object.keys(S.contacts);
-  list.querySelectorAll('.ci').forEach(e => e.remove());
+  const list=document.getElementById('clist');
+  const noc=document.getElementById('noc');
+  list.querySelectorAll('.ci').forEach(e=>e.remove());
 
-  if(!names.length){ noc.style.display='block'; return }
-  noc.style.display = 'none';
+  const names=Object.keys(S.contacts);
+  const groupIds=Object.keys(S.groups);
 
-  names.sort((a,b) => {
-    const d = (S.contacts[a].status==='online'?0:1) - (S.contacts[b].status==='online'?0:1);
-    return d || a.localeCompare(b);
-  });
+  if(!names.length&&!groupIds.length){ noc.style.display='block'; return }
+  noc.style.display='none';
 
-  for(const n of names){
-    const c  = S.contacts[n];
-    const on = c.status === 'online';
-    const d  = document.createElement('div');
-    d.className   = 'ci'+(S.active===n?' active':'');
-    d.dataset.name = n;
-    d.onclick = () => openChat(n);
-    d.innerHTML = `
-      <div class="av" style="background:${c.color}">
-        <span>${ini(n)}</span><span class="sdot ${on?'on':'off'}"></span>
-      </div>
-      <div class="ci-info">
-        <div class="ci-name">${esc(n)}</div>
-        <div class="ci-stat ${on?'on':''}">${on?'● Online':fmtSeen(c.lastSeen)}</div>
-      </div>
-      ${c.unread?`<span class="ubadge">${c.unread}</span>`:''}`;
-    list.appendChild(d);
+  // contacts
+  if(names.length){
+    names.sort((a,b)=>{
+      const d=(S.contacts[a].status==='online'?0:1)-(S.contacts[b].status==='online'?0:1);
+      return d||a.localeCompare(b);
+    });
+    for(const n of names){
+      const c=S.contacts[n]; const on=c.status==='online';
+      const d=document.createElement('div');
+      d.className='ci'+(S.active===n?' active':''); d.dataset.name=n; d.onclick=()=>openChat(n);
+      d.innerHTML=`
+        <div class="av" style="background:${c.color}">
+          <span>${ini(n)}</span><span class="sdot ${on?'on':'off'}"></span>
+        </div>
+        <div class="ci-info">
+          <div class="ci-name">${esc(n)}</div>
+          <div class="ci-stat ${on?'on':''}">${on?'● Online':fmtSeen(c.lastSeen)}</div>
+        </div>
+        ${c.unread?`<span class="ubadge">${c.unread}</span>`:''}`;
+      list.appendChild(d);
+    }
+  }
+
+  // groups
+  if(groupIds.length){
+    const lbl=document.createElement('div');
+    lbl.style.cssText='font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--text3);padding:12px 10px 4px';
+    lbl.textContent='Groups';
+    list.appendChild(lbl);
+
+    for(const gid of groupIds){
+      const g=S.groups[gid];
+      const unread=(S.contacts['_g_'+gid]||{}).unread||0;
+      const d=document.createElement('div');
+      d.className='ci'+(S.active===gid?' active':''); d.dataset.name=gid; d.onclick=()=>openChat(gid);
+      d.innerHTML=`
+        <div class="av grp"><span>👥</span></div>
+        <div class="ci-info">
+          <div class="ci-name">${esc(g.name)}</div>
+          <div class="ci-stat">${g.members.length} members</div>
+        </div>
+        ${unread?`<span class="ubadge">${unread}</span>`:''}`;
+      list.appendChild(d);
+    }
   }
 }
 
 function fmtSeen(ts){
   if(!ts) return 'Offline';
-  const d = Date.now()-ts;
-  if(d < 60000)     return 'Just now';
-  if(d < 3600000)   return Math.floor(d/60000)+'m ago';
-  if(d < 86400000)  return Math.floor(d/3600000)+'h ago';
+  const d=Date.now()-ts;
+  if(d<60000) return 'Just now';
+  if(d<3600000) return Math.floor(d/60000)+'m ago';
+  if(d<86400000) return Math.floor(d/3600000)+'h ago';
   return new Date(ts).toLocaleDateString();
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // ADD CONTACT MODAL
-// ════════════════════════════════════════════════
-function openAddModal(){
-  document.getElementById('addmod').classList.remove('hidden');
-  document.getElementById('addinp').focus();
-}
-function closeAddModal(){
-  document.getElementById('addmod').classList.add('hidden');
-  document.getElementById('addinp').value = '';
-}
-document.getElementById('addinp').addEventListener('keydown', e => {
-  if(e.key==='Enter')  doAddContact();
-  if(e.key==='Escape') closeAddModal();
-});
+// ═══════════════════════════════════════════════
+function openAddModal(){ document.getElementById('addmod').classList.remove('hidden'); document.getElementById('addinp').focus() }
+function closeAddModal(){ document.getElementById('addmod').classList.add('hidden'); document.getElementById('addinp').value='' }
+document.getElementById('addinp').addEventListener('keydown',e=>{ if(e.key==='Enter')doAddContact(); if(e.key==='Escape')closeAddModal() });
 function doAddContact(){
-  const n = document.getElementById('addinp').value.trim();
-  if(!n) return;
-  if(n === S.me){ toast("That's your own name!"); return }
-  if(!S.contacts[n])
-    S.contacts[n] = { status:'offline', lastSeen:null, color:col(n), unread:0 };
+  const n=document.getElementById('addinp').value.trim();
+  if(!n) return; if(n===S.me){toast("That's you!");return}
+  if(!S.contacts[n]) S.contacts[n]={status:'offline',lastSeen:null,color:col(n),unread:0};
   saveCts(); renderContacts(); closeAddModal(); openChat(n);
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
+// GROUP MODAL
+// ═══════════════════════════════════════════════
+function openGroupModal(){
+  const contacts=Object.keys(S.contacts);
+  const ml=document.getElementById('member-list');
+  ml.innerHTML='';
+  if(!contacts.length){
+    ml.innerHTML='<div class="no-members">Add contacts first before creating a group.</div>';
+  } else {
+    for(const n of contacts){
+      const on=S.contacts[n].status==='online';
+      const row=document.createElement('label');
+      row.className='member-item';
+      row.innerHTML=`
+        <input type="checkbox" value="${esc(n)}">
+        <div class="av" style="background:${S.contacts[n].color};width:28px;height:28px;font-size:10px;flex-shrink:0">
+          <span>${ini(n)}</span>
+        </div>
+        <span class="member-item-name">${esc(n)}</span>
+        <span class="member-item-stat ${on?'on':''}">${on?'Online':'Offline'}</span>`;
+      ml.appendChild(row);
+    }
+  }
+  document.getElementById('grpname').value='';
+  document.getElementById('grpmod').classList.remove('hidden');
+  document.getElementById('grpname').focus();
+}
+function closeGroupModal(){ document.getElementById('grpmod').classList.add('hidden') }
+
+function doCreateGroup(){
+  const name=document.getElementById('grpname').value.trim();
+  if(!name){ toast('Enter a group name'); return }
+  const checked=[...document.querySelectorAll('#member-list input:checked')].map(i=>i.value);
+  if(!checked.length){ toast('Select at least one member'); return }
+
+  const gid='grp_'+uid();
+  const members=[S.me,...checked];
+  const group={ id:gid, name, members, createdBy:S.me };
+  S.groups[gid]=group; saveGroups();
+
+  // invite each member
+  for(const m of checked){
+    send({ type:'group-invite', to:m, groupId:gid, groupName:name, members, from:S.me });
+  }
+
+  renderContacts(); closeGroupModal(); openChat(gid);
+  toast('Group "'+name+'" created');
+}
+
+function onGroupInvite(m){
+  if(S.groups[m.groupId]) return; // already have it
+  S.groups[m.groupId]={ id:m.groupId, name:m.groupName, members:m.members, createdBy:m.from };
+  saveGroups(); renderContacts();
+  toast('Added to group "'+m.groupName+'" by '+m.from);
+}
+
+// ═══════════════════════════════════════════════
 // CHAT
-// ════════════════════════════════════════════════
-function openChat(name){
-  S.active = name;
-  if(S.contacts[name]) S.contacts[name].unread = 0;
+// ═══════════════════════════════════════════════
+function openChat(convId){
+  S.active=convId;
+  // clear unread
+  if(convId.startsWith('grp_')){ if(S.contacts['_g_'+convId]) S.contacts['_g_'+convId].unread=0 }
+  else if(S.contacts[convId]) S.contacts[convId].unread=0;
+
   document.getElementById('empty').classList.add('hidden');
   document.getElementById('chatarea').classList.remove('hidden');
   updHdr(); renderMsgs();
-  document.querySelectorAll('.ci').forEach(e => e.classList.toggle('active', e.dataset.name===name));
-  // Mobile: slide sidebar out
-  if(window.innerWidth <= 640)
-    document.getElementById('sidebar').classList.add('slide-out');
+  document.querySelectorAll('.ci').forEach(e=>e.classList.toggle('active',e.dataset.name===convId));
+
+  // hide call buttons for groups
+  const isGrp=convId.startsWith('grp_');
+  document.getElementById('call-audio-btn').style.display=isGrp?'none':'flex';
+  document.getElementById('call-video-btn').style.display=isGrp?'none':'flex';
+
+  // close sidebar on mobile after selecting
+  closeSidebar();
   document.getElementById('msgi').focus();
 }
 
-function goBack(){
-  document.getElementById('sidebar').classList.remove('slide-out');
-}
-
 function updHdr(){
-  const n = S.active; if(!n) return;
-  const c = S.contacts[n]; if(!c) return;
-  const on = c.status === 'online';
-  document.getElementById('chname').textContent       = n;
-  document.getElementById('chavi').textContent        = ini(n);
-  document.getElementById('chav').style.background    = c.color;
-  document.getElementById('chdot').className          = 'sdot '+(on?'on':'off');
-  const st = document.getElementById('chstat');
-  st.textContent = on ? 'Online' : fmtSeen(c.lastSeen);
-  st.className   = 'ch-stat'+(on?' on':'');
+  const id=S.active; if(!id) return;
+  const isGrp=id.startsWith('grp_');
+
+  if(isGrp){
+    const g=S.groups[id]; if(!g) return;
+    document.getElementById('chname').textContent=g.name;
+    document.getElementById('chavi').textContent='👥';
+    document.getElementById('chav').className='av grp';
+    document.getElementById('chdot').className='sdot';
+    document.getElementById('chdot').style.display='none';
+    const st=document.getElementById('chstat');
+    const online=g.members.filter(m=>m===S.me||(S.contacts[m]&&S.contacts[m].status==='online'));
+    st.textContent=g.members.length+' members · '+online.length+' online';
+    st.className='ch-stat';
+  } else {
+    const c=S.contacts[id]; if(!c) return;
+    const on=c.status==='online';
+    document.getElementById('chname').textContent=id;
+    document.getElementById('chavi').textContent=ini(id);
+    document.getElementById('chav').className='av';
+    document.getElementById('chav').style.background=c.color;
+    document.getElementById('chdot').style.display='';
+    document.getElementById('chdot').className='sdot '+(on?'on':'off');
+    const st=document.getElementById('chstat');
+    st.textContent=on?'Online':fmtSeen(c.lastSeen);
+    st.className='ch-stat'+(on?' on':'');
+  }
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // MESSAGES
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 function sendMsg(){
-  const el  = document.getElementById('msgi');
-  const txt = el.value.trim();
-  if(!txt || !S.active) return;
-  const msg = { id:uid(), text:txt, sender:S.me, ts:Date.now() };
-  if(!S.msgs[S.active]) S.msgs[S.active] = [];
-  S.msgs[S.active].push(msg);
-  saveMsgs(S.active);
-  send({ type:'message', to:S.active, ...msg });
-  el.value = ''; el.style.height = 'auto';
+  const el=document.getElementById('msgi');
+  const txt=el.value.trim(); if(!txt||!S.active) return;
+  const isGrp=S.active.startsWith('grp_');
+  const msg={id:uid(),text:txt,sender:S.me,ts:Date.now()};
+
+  if(isGrp){
+    const g=S.groups[S.active]; if(!g) return;
+    msg.groupId=g.id; msg.groupName=g.name;
+    if(!S.msgs[S.active]) S.msgs[S.active]=[];
+    S.msgs[S.active].push(msg); saveMsgs(S.active);
+    // send to each member except self
+    for(const m of g.members){
+      if(m!==S.me) send({type:'message',to:m,...msg});
+    }
+  } else {
+    if(!S.msgs[S.active]) S.msgs[S.active]=[];
+    S.msgs[S.active].push(msg); saveMsgs(S.active);
+    send({type:'message',to:S.active,...msg});
+  }
+
+  el.value=''; el.style.height='auto';
   renderMsgs(); scrollBot();
 }
 
 function onInMsg(m){
-  if(!S.contacts[m.from])
-    S.contacts[m.from] = { status:'online', lastSeen:Date.now(), color:col(m.from), unread:0 };
-  S.contacts[m.from].lastSeen = Date.now();
-  if(!S.msgs[m.from]) S.msgs[m.from] = [];
-  S.msgs[m.from].push({ id:m.id, text:m.text, sender:m.from, ts:m.ts });
-  saveMsgs(m.from);
-  if(S.active !== m.from){
-    S.contacts[m.from].unread = (S.contacts[m.from].unread||0)+1;
-    toast('New message from '+m.from);
+  const convId=m.groupId||m.from;
+
+  // ensure contact exists
+  if(!S.contacts[m.from]) S.contacts[m.from]={status:'online',lastSeen:Date.now(),color:col(m.from),unread:0};
+  S.contacts[m.from].lastSeen=Date.now();
+
+  if(!S.msgs[convId]) S.msgs[convId]=[];
+  S.msgs[convId].push({id:m.id,text:m.text,sender:m.from,ts:m.ts,groupId:m.groupId,groupName:m.groupName});
+  saveMsgs(convId);
+
+  if(S.active!==convId){
+    if(m.groupId){
+      if(!S.contacts['_g_'+m.groupId]) S.contacts['_g_'+m.groupId]={unread:0};
+      S.contacts['_g_'+m.groupId].unread=(S.contacts['_g_'+m.groupId].unread||0)+1;
+      toast('New message in '+(m.groupName||'group'));
+    } else {
+      S.contacts[m.from].unread=(S.contacts[m.from].unread||0)+1;
+      toast('New message from '+m.from);
+    }
   } else {
     renderMsgs(); scrollBot();
   }
@@ -745,33 +851,29 @@ function onInMsg(m){
 }
 
 function renderMsgs(){
-  const box  = document.getElementById('msgs');
-  const list = (S.msgs[S.active]||[]).filter(m => m.ts > Date.now()-TTL);
-  box.innerHTML = '';
+  const box=document.getElementById('msgs');
+  const isGrp=S.active&&S.active.startsWith('grp_');
+  const list=(S.msgs[S.active]||[]).filter(m=>m.ts>Date.now()-TTL);
+  box.innerHTML='';
+  if(!list.length){box.innerHTML='<div class="no-msgs">No messages yet — say hello! 👋</div>';return}
 
-  if(!list.length){
-    box.innerHTML = '<div class="no-msgs">No messages yet — say hello! 👋</div>';
-    return;
-  }
-
-  const note = document.createElement('div');
-  note.className   = 'exp-note';
-  note.textContent = '⏱  Messages auto-delete after 24 hours';
+  const note=document.createElement('div');
+  note.className='exp-note'; note.textContent='⏱  Messages auto-delete after 24 hours';
   box.appendChild(note);
 
-  let lastDay = '';
+  let lastDay='';
   for(const m of list){
-    const day = new Date(m.ts).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-    if(day !== lastDay){
-      const dd = document.createElement('div');
-      dd.className = 'dd'; dd.textContent = day;
-      box.appendChild(dd); lastDay = day;
+    const day=new Date(m.ts).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+    if(day!==lastDay){
+      const dd=document.createElement('div'); dd.className='dd'; dd.textContent=day;
+      box.appendChild(dd); lastDay=day;
     }
-    const isSent = m.sender === S.me;
-    const el = document.createElement('div');
-    el.className = 'msg '+(isSent?'s':'r');
-    const t = new Date(m.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
-    el.innerHTML = `<div class="bbl">${esc(m.text)}</div>
+    const isSent=m.sender===S.me;
+    const el=document.createElement('div'); el.className='msg '+(isSent?'s':'r');
+    const t=new Date(m.ts).toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',hour12:true});
+    // show sender name in group chats
+    const senderLine=isGrp&&!isSent?`<div class="msg-sender">${esc(m.sender)}</div>`:'';
+    el.innerHTML=`${senderLine}<div class="bbl">${esc(m.text)}</div>
       <div class="msg-meta"><span class="msg-t">${t}</span></div>`;
     box.appendChild(el);
   }
@@ -781,234 +883,147 @@ function scrollBot(){ const b=document.getElementById('msgs'); b.scrollTop=b.scr
 
 function saveChat(){
   if(!S.active) return;
-  const list = S.msgs[S.active]||[];
-  if(!list.length){ toast('No messages to save'); return }
-  const lines = [
-    `Cipher — ${S.me} & ${S.active}`,
-    `Saved: ${new Date().toLocaleString()}`,
-    '─'.repeat(52), ''
-  ];
-  for(const m of list)
-    lines.push(`[${new Date(m.ts).toLocaleString()}] ${m.sender}: ${m.text}`);
-  const a   = document.createElement('a');
-  a.href     = URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain'}));
-  a.download = `cipher_${S.active}_${Date.now()}.txt`;
-  a.click();
-  toast('Chat saved ✓');
+  const list=S.msgs[S.active]||[];
+  if(!list.length){toast('No messages to save');return}
+  const label=S.active.startsWith('grp_')?(S.groups[S.active]?.name||'group'):S.active;
+  const lines=[`Cipher — ${S.me} & ${label}`,`Saved: ${new Date().toLocaleString()}`,'─'.repeat(52),''];
+  for(const m of list) lines.push(`[${new Date(m.ts).toLocaleString()}] ${m.sender}: ${m.text}`);
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([lines.join('\n')],{type:'text/plain'}));
+  a.download=`cipher_${label}_${Date.now()}.txt`; a.click(); toast('Chat saved ✓');
 }
 
-function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg() } }
+function onKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg()} }
 function autoH(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,120)+'px' }
 
-// ════════════════════════════════════════════════
-// WebRTC CALLS
-// ════════════════════════════════════════════════
-function getRtcCfg(){ return { iceServers: S.iceServers } }
+// ═══════════════════════════════════════════════
+// WebRTC
+// ═══════════════════════════════════════════════
+function getRtcCfg(){ return { iceServers:S.iceServers } }
 
 async function startCall(type){
-  if(!S.active) return;
-  const ct = S.contacts[S.active];
-  if(!ct || ct.status !== 'online'){ toast(S.active+' is offline'); return }
-  S.call = { on:true, type, peer:S.active, dir:'out', start:null, tick:null, offer:null };
-
-  try{
-    localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video:type==='video' });
-  }catch(err){
-    toast('Mic/camera error: '+err.message); cleanCall(); return;
-  }
-
-  pc = new RTCPeerConnection(getRtcCfg()); iceQ = [];
-  localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
-
-  if(type==='video'){
-    document.getElementById('lvid').srcObject = localStream;
-    document.getElementById('lvid').style.display = 'block';
-  }
-
-  pc.onicecandidate       = e => { if(e.candidate) send({type:'ice', to:S.call.peer, c:e.candidate}) };
-  pc.ontrack              = onRemoteTrack;
-  pc.onconnectionstatechange = onConnSt;
-
-  const offer = await pc.createOffer();
-  await pc.setLocalDescription(offer);
-  send({ type:'call-offer', to:S.active, sdp:offer, callType:type });
-  showCallUI(type, S.active, 'out');
+  if(!S.active||S.active.startsWith('grp_')) return;
+  const ct=S.contacts[S.active];
+  if(!ct||ct.status!=='online'){toast(S.active+' is offline');return}
+  S.call={on:true,type,peer:S.active,dir:'out',start:null,tick:null,offer:null};
+  try{ localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:type==='video'}) }
+  catch(err){ toast('Mic/camera error: '+err.message); cleanCall(); return }
+  pc=new RTCPeerConnection(getRtcCfg()); iceQ=[];
+  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+  if(type==='video'){ document.getElementById('lvid').srcObject=localStream; document.getElementById('lvid').style.display='block' }
+  pc.onicecandidate=e=>{if(e.candidate)send({type:'ice',to:S.call.peer,c:e.candidate})};
+  pc.ontrack=onRemoteTrack; pc.onconnectionstatechange=onConnSt;
+  const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+  send({type:'call-offer',to:S.active,sdp:offer,callType:type}); showCallUI(type,S.active,'out');
 }
 
 async function onOffer(m){
-  if(S.call.on){ send({type:'call-rej', to:m.from}); return }
-  S.call = { on:false, type:m.callType, peer:m.from, dir:'in', start:null, tick:null, offer:m.sdp };
-  if(!S.contacts[m.from])
-    S.contacts[m.from] = { status:'online', lastSeen:Date.now(), color:col(m.from), unread:0 };
+  if(S.call.on){send({type:'call-rej',to:m.from});return}
+  S.call={on:false,type:m.callType,peer:m.from,dir:'in',start:null,tick:null,offer:m.sdp};
+  if(!S.contacts[m.from]) S.contacts[m.from]={status:'online',lastSeen:Date.now(),color:col(m.from),unread:0};
   renderContacts();
-  document.getElementById('incname').textContent = m.from;
-  document.getElementById('inctype').textContent = m.callType==='video' ? '📹 Video Call' : '📞 Audio Call';
+  document.getElementById('incname').textContent=m.from;
+  document.getElementById('inctype').textContent=m.callType==='video'?'📹 Video Call':'📞 Audio Call';
   document.getElementById('incall').classList.remove('hidden');
 }
 
 async function acceptCall(){
   document.getElementById('incall').classList.add('hidden');
-  const { peer, type, offer } = S.call;
-  S.call.on = true;
-
-  try{
-    localStream = await navigator.mediaDevices.getUserMedia({ audio:true, video:type==='video' });
-  }catch(err){
-    toast('Mic/camera error: '+err.message);
-    send({type:'call-rej', to:peer}); cleanCall(); return;
-  }
-
-  pc = new RTCPeerConnection(getRtcCfg()); iceQ = [];
-  localStream.getTracks().forEach(t => pc.addTrack(t, localStream));
-
-  if(type==='video'){
-    document.getElementById('lvid').srcObject = localStream;
-    document.getElementById('lvid').style.display = 'block';
-  }
-
-  pc.onicecandidate          = e => { if(e.candidate) send({type:'ice', to:peer, c:e.candidate}) };
-  pc.ontrack                 = onRemoteTrack;
-  pc.onconnectionstatechange = onConnSt;
-
+  const{peer,type,offer}=S.call; S.call.on=true;
+  try{ localStream=await navigator.mediaDevices.getUserMedia({audio:true,video:type==='video'}) }
+  catch(err){ toast('Mic/camera error: '+err.message); send({type:'call-rej',to:peer}); cleanCall(); return }
+  pc=new RTCPeerConnection(getRtcCfg()); iceQ=[];
+  localStream.getTracks().forEach(t=>pc.addTrack(t,localStream));
+  if(type==='video'){ document.getElementById('lvid').srcObject=localStream; document.getElementById('lvid').style.display='block' }
+  pc.onicecandidate=e=>{if(e.candidate)send({type:'ice',to:peer,c:e.candidate})};
+  pc.ontrack=onRemoteTrack; pc.onconnectionstatechange=onConnSt;
   await pc.setRemoteDescription(new RTCSessionDescription(offer));
   for(const c of iceQ) await pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{});
-  iceQ = [];
-
-  const ans = await pc.createAnswer();
-  await pc.setLocalDescription(ans);
-  send({ type:'call-answer', to:peer, sdp:ans });
-  showCallUI(type, peer, 'in');
+  iceQ=[];
+  const ans=await pc.createAnswer(); await pc.setLocalDescription(ans);
+  send({type:'call-answer',to:peer,sdp:ans}); showCallUI(type,peer,'in');
 }
 
 async function onAnswer(m){
   if(!pc) return;
   await pc.setRemoteDescription(new RTCSessionDescription(m.sdp)).catch(()=>{});
   for(const c of iceQ) await pc.addIceCandidate(new RTCIceCandidate(c)).catch(()=>{});
-  iceQ = [];
+  iceQ=[];
 }
-
 async function onIce(m){
-  if(!pc || !m.c) return;
+  if(!pc||!m.c) return;
   if(pc.remoteDescription) await pc.addIceCandidate(new RTCIceCandidate(m.c)).catch(()=>{});
   else iceQ.push(m.c);
 }
-
 function onRemoteTrack(e){
-  const rv = document.getElementById('rvid');
-  if(!rv.srcObject) rv.srcObject = new MediaStream();
+  const rv=document.getElementById('rvid');
+  if(!rv.srcObject) rv.srcObject=new MediaStream();
   rv.srcObject.addTrack(e.track);
-  if(S.call.type==='video'){
-    rv.style.display = 'block';
-    document.getElementById('callav-wrap').style.display = 'none';
-  }
+  if(S.call.type==='video'){ rv.style.display='block'; document.getElementById('callav-wrap').style.display='none' }
 }
-
 function onConnSt(){
   if(!pc) return;
-  if(pc.connectionState === 'connected') onCallConnected();
+  if(pc.connectionState==='connected') onCallConnected();
   else if(['disconnected','failed','closed'].includes(pc.connectionState)) cleanCall();
 }
-
 function onCallConnected(){
-  S.call.start = Date.now();
-  document.getElementById('callst').textContent = 'Connected';
+  S.call.start=Date.now();
+  document.getElementById('callst').textContent='Connected';
   document.getElementById('calldur').classList.remove('hidden');
   if(S.call.tick) clearInterval(S.call.tick);
-  S.call.tick = setInterval(() => {
-    const s = Math.floor((Date.now()-S.call.start)/1000);
-    document.getElementById('calldur').textContent =
+  S.call.tick=setInterval(()=>{
+    const s=Math.floor((Date.now()-S.call.start)/1000);
+    document.getElementById('calldur').textContent=
       String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
-  }, 1000);
+  },1000);
 }
-
-function rejectCall(){
-  document.getElementById('incall').classList.add('hidden');
-  send({ type:'call-rej', to:S.call.peer });
-  cleanCall();
-}
-
-function endCall(){
-  if(S.call.peer) send({ type:'call-end', to:S.call.peer });
-  cleanCall();
-}
-
+function rejectCall(){ document.getElementById('incall').classList.add('hidden'); send({type:'call-rej',to:S.call.peer}); cleanCall() }
+function endCall(){ if(S.call.peer) send({type:'call-end',to:S.call.peer}); cleanCall() }
 function cleanCall(){
   if(S.call.tick) clearInterval(S.call.tick);
-  if(pc){ pc.close(); pc=null }
-  if(localStream){ localStream.getTracks().forEach(t=>t.stop()); localStream=null }
-  const rv = document.getElementById('rvid');
-  if(rv.srcObject){ rv.srcObject.getTracks().forEach(t=>t.stop()); rv.srcObject=null }
-  rv.style.display = 'none';
-  document.getElementById('lvid').style.display  = 'none';
-  document.getElementById('lvid').srcObject      = null;
-  document.getElementById('callav-wrap').style.display = 'flex';
-  document.getElementById('calldur').classList.add('hidden');
-  document.getElementById('calldur').textContent = '';
-  document.getElementById('callst').textContent  = 'Calling…';
-  document.getElementById('callover').classList.add('hidden');
-  document.getElementById('incall').classList.add('hidden');
-  S.call   = { on:false, type:null, peer:null, dir:null, start:null, tick:null, offer:null };
-  S.muted  = false; S.camOff = false; iceQ = [];
-  document.getElementById('mbtn').classList.remove('toggled');
-  document.getElementById('mbtn').textContent   = '🎙';
-  document.getElementById('cambtn').classList.remove('toggled');
-  document.getElementById('cambtn').textContent = '📷';
+  if(pc){pc.close();pc=null}
+  if(localStream){localStream.getTracks().forEach(t=>t.stop());localStream=null}
+  const rv=document.getElementById('rvid');
+  if(rv.srcObject){rv.srcObject.getTracks().forEach(t=>t.stop());rv.srcObject=null}
+  rv.style.display='none'; document.getElementById('lvid').style.display='none'; document.getElementById('lvid').srcObject=null;
+  document.getElementById('callav-wrap').style.display='flex';
+  document.getElementById('calldur').classList.add('hidden'); document.getElementById('calldur').textContent='';
+  document.getElementById('callst').textContent='Calling…';
+  document.getElementById('callover').classList.add('hidden'); document.getElementById('incall').classList.add('hidden');
+  S.call={on:false,type:null,peer:null,dir:null,start:null,tick:null,offer:null};
+  S.muted=false; S.camOff=false; iceQ=[];
+  document.getElementById('mbtn').classList.remove('toggled'); document.getElementById('mbtn').textContent='🎙';
+  document.getElementById('cambtn').classList.remove('toggled'); document.getElementById('cambtn').textContent='📷';
 }
-
-function showCallUI(type, peer, dir){
+function showCallUI(type,peer,dir){
   document.getElementById('callover').classList.remove('hidden');
-  document.getElementById('callname').textContent = peer;
-  document.getElementById('callst').textContent   = dir==='out' ? 'Calling…' : 'Connecting…';
-  document.getElementById('callavi').textContent  = ini(peer);
-  document.getElementById('callav').style.background = S.contacts[peer]?.color || col(peer);
-  const cb = document.getElementById('cambtn');
-  if(type==='video'){
-    cb.classList.remove('hidden');
-    document.getElementById('callav-wrap').style.display = 'none';
-  } else {
-    cb.classList.add('hidden');
-    document.getElementById('callav-wrap').style.display = 'flex';
-  }
-  document.getElementById('rvid').style.display = 'none';
+  document.getElementById('callname').textContent=peer;
+  document.getElementById('callst').textContent=dir==='out'?'Calling…':'Connecting…';
+  document.getElementById('callavi').textContent=ini(peer);
+  document.getElementById('callav').style.background=S.contacts[peer]?.color||col(peer);
+  const cb=document.getElementById('cambtn');
+  if(type==='video'){cb.classList.remove('hidden');document.getElementById('callav-wrap').style.display='none'}
+  else{cb.classList.add('hidden');document.getElementById('callav-wrap').style.display='flex'}
+  document.getElementById('rvid').style.display='none';
 }
-
 function togMute(){
-  S.muted = !S.muted;
-  if(localStream) localStream.getAudioTracks().forEach(t => t.enabled = !S.muted);
-  const b = document.getElementById('mbtn');
-  b.classList.toggle('toggled', S.muted);
-  b.textContent = S.muted ? '🔇' : '🎙';
+  S.muted=!S.muted; if(localStream) localStream.getAudioTracks().forEach(t=>t.enabled=!S.muted);
+  const b=document.getElementById('mbtn'); b.classList.toggle('toggled',S.muted); b.textContent=S.muted?'🔇':'🎙';
 }
-
 function togCam(){
-  S.camOff = !S.camOff;
-  if(localStream) localStream.getVideoTracks().forEach(t => t.enabled = !S.camOff);
-  const b = document.getElementById('cambtn');
-  b.classList.toggle('toggled', S.camOff);
-  b.textContent = S.camOff ? '🚫' : '📷';
+  S.camOff=!S.camOff; if(localStream) localStream.getVideoTracks().forEach(t=>t.enabled=!S.camOff);
+  const b=document.getElementById('cambtn'); b.classList.toggle('toggled',S.camOff); b.textContent=S.camOff?'🚫':'📷';
 }
 
-// ════════════════════════════════════════════════
+// ═══════════════════════════════════════════════
 // BANNER + TOAST
-// ════════════════════════════════════════════════
-function showBanner(type, text){
-  const el = document.getElementById('banner');
-  el.textContent = text;
-  el.className   = type;
-}
-function hideBanner(){
-  document.getElementById('banner').className = '';
-  document.getElementById('banner').style.display = 'none';
-  // reset display after CSS removes it
-  setTimeout(()=>document.getElementById('banner').style.display='', 10);
-}
-
-let _tt = null;
+// ═══════════════════════════════════════════════
+function showBanner(type,text){ const el=document.getElementById('banner'); el.textContent=text; el.className=type }
+function hideBanner(){ const el=document.getElementById('banner'); el.className=''; el.style.display='none'; setTimeout(()=>el.style.display='',10) }
+let _tt=null;
 function toast(msg){
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.classList.add('show');
-  if(_tt) clearTimeout(_tt);
-  _tt = setTimeout(()=>el.classList.remove('show'), 2800);
+  const el=document.getElementById('toast'); el.textContent=msg; el.classList.add('show');
+  if(_tt) clearTimeout(_tt); _tt=setTimeout(()=>el.classList.remove('show'),2800);
 }
 </script>
 </body>
