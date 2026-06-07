@@ -50,6 +50,18 @@ textarea,input{font-family:inherit}
 /* ── App layout ─────────────────────────────────────────── */
 #app{display:flex;height:100vh}
 
+/* ── Mobile ─────────────────────────────────────────────── */
+@media(max-width:640px){
+  .setup-card{width:94vw;padding:36px 24px}
+  #app{position:relative}
+  #sidebar{position:absolute;inset:0;width:100%;z-index:10;transform:translateX(0);transition:transform .25s ease}
+  #sidebar.slide-out{transform:translateX(-100%)}
+  #chat{position:absolute;inset:0;width:100%}
+  #back-btn{display:flex}
+  .save-btn{display:none}
+  #lvid{width:110px;height:76px;bottom:90px;right:12px}
+}
+
 /* ── Sidebar ────────────────────────────────────────────── */
 #sidebar{width:290px;min-width:290px;background:var(--surf);border-right:1px solid var(--border);
   display:flex;flex-direction:column;height:100vh}
@@ -281,6 +293,7 @@ textarea,input{font-family:inherit}
     </div>
     <div id="chatarea" class="hidden">
       <div id="chdr">
+        <button id="back-btn" onclick="goBack()" style="display:none;background:none;border:none;color:var(--text2);font-size:20px;padding:0 8px 0 0;line-height:1">‹</button>
         <div class="av" id="chav">
           <span id="chavi"></span>
           <span class="sdot" id="chdot"></span>
@@ -676,7 +689,14 @@ function openChat(name){
   document.getElementById('chatarea').classList.remove('hidden');
   updHdr(); renderMsgs();
   document.querySelectorAll('.ci').forEach(e => e.classList.toggle('active', e.dataset.name===name));
+  // Mobile: slide sidebar out
+  if(window.innerWidth <= 640)
+    document.getElementById('sidebar').classList.add('slide-out');
   document.getElementById('msgi').focus();
+}
+
+function goBack(){
+  document.getElementById('sidebar').classList.remove('slide-out');
 }
 
 function updHdr(){
